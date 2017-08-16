@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
@@ -12,13 +13,133 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    buildTypes {
+    dexOptions {
+        preDexLibraries = false
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+    signingConfigs {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            try {
+                storeFile file(KEYSTORE_FILE)
+                storePassword KEYSTORE_PASSWORD
+                keyAlias KEYSTORE_ALIAS
+                keyPassword KEY_PASSWORD
+            }
+            catch (ignored) {
+                if (System.getenv("KEYSTORE_FILE") != null) {
+                    storeFile = file(System.getenv("KEYSTORE_FILE"))
+                    storePassword = System.getenv("KEYSTORE_PWD")
+                    keyAlias = System.getenv("KEYSTORE_ALIAS")
+                    keyPassword = System.getenv("KEYSTORE_ALIAS_PWD")
+                } else {
+                    throw new InvalidUserDataException("You should define KEYSTORE_PASSWORD and KEY_PASSWORD in gradle.properties.")
+                }
+            }
         }
     }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationVariants.all { variant ->
+                if (variant.buildType.name == 'release') {
+                    variant.mergedFlavor.versionName = VersionName()
+                    variant.mergedFlavor.versionCode = getGitVersionCode()
+                    renameArtifact(variant)
+                }
+
+            }
+        }
+    }
+
+    productFlavors {
+
+        "360" {
+            applicationId "com.hcy.tomeetu"
+        }
+
+        huawei {
+            applicationId "com.hcy.tomeetu"
+        }
+
+    }
 }
+
+def renameArtifact(variant) {
+
+    variant.outputs.each { output ->
+        output.outputFile = new File(
+                (String) output.outputFile.parent,
+                (String) "${variant.productFlavors[0].name}-${variant.buildType.name}-code-${variant.versionCode}-(v${variant.versionName})-${releaseTime()}.apk".toLowerCase())
+    }
+}
+
+def releaseTime() {
+    return new Date().format("yyyyMMdd-HHmmss")
+}
+
+
+def getGitVersionCode() {
+
+    def cmd = 'git rev-list HEAD --count'
+
+    int gitVersion = cmd.execute().text.trim().toInteger()
+
+    println("the git version is : " + gitVersion)
+
+    return gitVersion
+
+}
+//使用git的Tag来自动定制Version
+def VersionName() {
+    def cmd = 'git tag'
+    def tags = cmd.execute().text.readLines()
+    /* if (tags.size() >= 1) {
+         def version_last = tags.last().trim() //newest
+         cmd = 'git rev-list ' + version_last + '..  --count'
+         if (tags.size() >= 2) {
+             tags.remove(tags.last())
+             def version_last_2 = tags.last().trim() //newest
+             cmd = 'git rev-list ' + version_last_2 + '..' + version_last + '  --count'
+         }
+     } else {
+         cmd = 'git rev-list  --count'
+     }*/
+    cmd = 'git rev-list  --all  --count'
+    def code = cmd.execute().text.trim().toInteger()
+
+    def versionName = tags.last().trim().replaceAll("[a-zA-Z]", "") + "-build" + code
+    logger.quiet(cmd + " >>>> versionName  = " + versionName)
+    println("the git versionName is : " + versionName)
+    return versionName
+}
+
+def getGitCommitDescription() {
+
+//    def cmd = "git rev-parse --short HEAD"
+
+    def cmd = "git log -1 --pretty=format:%cd --date=iso"
+
+    def proc = cmd.execute()
+
+    String cmdResult = proc.text.trim()
+
+    String[] resultArray = cmdResult.replaceAll(":", "-").split()
+
+    String apkName = (resultArray[0] + "-" + resultArray[1]).replaceAll("-", "_")
+
+    println("the apkName is : " + apkName)
+
+    return apkName
+
+}
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -26,7 +147,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }

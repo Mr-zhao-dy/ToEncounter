@@ -23,3 +23,84 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+##################below is for common android
+-keep public class **.R$* { public static final int *; }
+-keep public class * extends android.app.Activity
+-keep public class * extends android.support.v4.app.Fragment
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.view.View
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep class * implements android.os.Parcelable {public static final android.os.Parcelable$Creator *; }
+# 保留自定义控件不能被混淆
+-keep public class * extends android.view.View {
+    public <init>(android.content.Context);
+    public <init>(android.content.Context, android.util.AttributeSet);
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+    public void set*(***);
+    *** get* ();
+}
+# 保留Parcelable序列化的类不能被混淆
+-keep class * implements android.os.Parcelable{
+    public static final android.os.Parcelable$Creator *;
+}
+# 保留Serializable 序列化的类不被混淆
+-keepclassmembers class * implements java.io.Serializable {
+   static final long serialVersionUID;
+   private static final java.io.ObjectStreamField[] serialPersistentFields;
+   !static !transient <fields>;
+   private void writeObject(java.io.ObjectOutputStream);
+   private void readObject(java.io.ObjectInputStream);
+   java.lang.Object writeReplace();
+   java.lang.Object readResolve();
+}
+
+# 对R文件下的所有类及其方法，都不能被混淆
+-keep class .R
+-keepclassmembers class **.R$* {
+    *;
+}
+# 对于带有回调函数onXXEvent的，不能混淆
+-keepclassmembers class * {
+    void *(**On*Event);
+}
+-keepclassmembers class * {
+    void *(**Callback);
+}
+
+#gson
+##---------------Begin: proguard configuration for Gson  ----------
+# Gson uses generic type information stored in a class file when working with fields. Proguard
+# removes such information by default_no_login, so configure it to keep all of it.
+-keepattributes Signature
+
+# For using GSON @Expose annotation
+-keepattributes *Annotation*
+
+# Gson specific classes
+-keep class sun.misc.Unsafe { *; }
+#-keep class com.google.gson.stream.** { *; }
+
+# Application classes that will be serialized/deserialized over Gson
+-keep class com.google.gson.examples.android.model.** { *; }
+
+##---------------End: proguard configuration for Gson  ----------
+
+
+##---------------Begin: proguard configuration for RxJava  ----------
+-dontwarn sun.misc.**
+
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+   long producerIndex;
+   long consumerIndex;
+}
+
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+##---------------End: proguard configuration for RxJava  ----------
