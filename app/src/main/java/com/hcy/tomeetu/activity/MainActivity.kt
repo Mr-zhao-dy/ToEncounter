@@ -1,11 +1,13 @@
-package com.hcy.tomeetu
+package com.hcy.tomeetu.activity
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.hcy.tomeetu.R
+import com.hcy.tomeetu.common.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

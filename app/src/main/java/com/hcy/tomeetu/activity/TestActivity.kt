@@ -1,9 +1,11 @@
-package com.hcy.tomeetu
+package com.hcy.tomeetu.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.hcy.tomeetu.R
+import com.hcy.tomeetu.common.BaseActivity
 
-class TestActivity : AppCompatActivity() {
+class TestActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

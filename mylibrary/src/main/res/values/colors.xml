@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tedbottompicker_camera">#000</color>
+    <color name="tedbottompicker_gallery">#ccc</color>
+    <color name="golden_stars">#FFC619</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="color_white_lottery">#fffffff0</color>
+    <color name="transparent_lottery">#00000000</color>
+    <color name="color_red_lottery">#ffff4455</color>
+    <color name="color_red_black_lottery">#AE100F</color>
+    <color name="color_blue_lottery">#3CAED6</color>
+    <color name="color_yelow_lottery">#E9D714</color>
+</resources>

@@ -1,6 +1,6 @@
 # Add project specific ProGuard rules here.
 # By default, the flags in this file are appended to flags specified
-# in C:\Users\Administrator\AppData\Local\Android\Sdk/tools/proguard/proguard-android.txt
+# in D:\sdk/tools/proguard/proguard-android.txt
 # You can edit the include path and order by changing the proguardFiles
 # directive in build.gradle.
 #
@@ -23,14 +23,16 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--optimizations !code/simplification/cast,!field/*,!class/merging/*
--optimizationpasses 5
--dontusemixedcaseclassnames
--dontskipnonpubliclibraryclasses
--dontpreverify
--ignorewarnings
+-keepnames class * implements android.os.Parcelable {
+public static final ** CREATOR;
+}
 
+-keep class com.linkedin.** { *; }
+-keepattributes Signature
 
+-keep class com.chad.library.adapter.** {
+   *;
+}
 ##################below is for common android
 -keep public class **.R$* { public static final int *; }
 -keep public class * extends android.app.Activity
@@ -63,56 +65,26 @@
    java.lang.Object writeReplace();
    java.lang.Object readResolve();
 }
-
-# 对R文件下的所有类及其方法，都不能被混淆
--keep class .R
--keepclassmembers class **.R$* {
-    *;
+#glide
+-keep class com.bumptech.glide.integration.okhttp3.OkHttpGlideModule
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
 }
-# 对于带有回调函数onXXEvent的，不能混淆
--keepclassmembers class * {
-    void *(**On*Event);
-}
--keepclassmembers class * {
-    void *(**Callback);
-}
-
-#gson
-##---------------Begin: proguard configuration for Gson  ----------
-# Gson uses generic type information stored in a class file when working with fields. Proguard
-# removes such information by default_no_login, so configure it to keep all of it.
--keepattributes Signature
-
-# For using GSON @Expose annotation
--keepattributes *Annotation*
-
-# Gson specific classes
--keep class sun.misc.Unsafe { *; }
-#-keep class com.google.gson.stream.** { *; }
-
-# Application classes that will be serialized/deserialized over Gson
--keep class com.google.gson.examples.android.model.** { *; }
-
-##---------------End: proguard configuration for Gson  ----------
-
-
-##---------------Begin: proguard configuration for RxJava  ----------
--dontwarn sun.misc.**
-
--keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
-   long producerIndex;
-   long consumerIndex;
+-keep public class com.linkedin.android.mobilesdk.R$*{
+public static final int *;
+    }
+-keepclassmembers enum * {
+public static **[] values();
+public static ** valueOf(java.lang.String);
 }
 
--keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
-    rx.internal.util.atomic.LinkedQueueNode producerNode;
-}
-
--keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
-    rx.internal.util.atomic.LinkedQueueNode consumerNode;
-}
-##---------------End: proguard configuration for RxJava  ----------
+-keep class com.tencent.open.TDialog$*
+-keep class com.tencent.open.TDialog$* {*;}
+-keep class com.tencent.open.PKDialog
+-keep class com.tencent.open.PKDialog {*;}
+-keep class com.tencent.open.PKDialog$*
+-keep class com.tencent.open.PKDialog$* {*;}
 
 
--keep class com.hcy.tomeetu.Utils.** {*;}
--keep class com.hcy.tomeetu.common.** {*;}

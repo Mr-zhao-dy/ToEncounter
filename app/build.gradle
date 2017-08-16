@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
@@ -42,6 +43,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+            // buildConfigField "String", "BASE_URL", "\"http://api.hengchuangyun.com/\""
+            // buildConfigField "String", "BASE_URL", "\"http://192.168.1.188:8080/cfzxi_v2/control/\""
+            //  buildConfigField "String", "BASE_URL", "\"http://www.cfzxzz.com/cfzxi_v2/control/\""
+        }
+
         release {
             signingConfig signingConfigs.release
             minifyEnabled true
@@ -60,12 +68,16 @@ android {
 
     productFlavors {
 
-        "360" {
+        xiaomi {
             applicationId "com.hcy.tomeetu"
+            buildConfigField "boolean", "API_Log", "true"
+            buildConfigField "String", "channel", "\"xiaomi\""
         }
 
         huawei {
             applicationId "com.hcy.tomeetu"
+            buildConfigField "boolean", "API_Log", "true"
+            buildConfigField "String", "channel", "\"huawei\""
         }
 
     }
@@ -142,13 +154,14 @@ def getGitCommitDescription() {
 
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    testCompile 'junit:junit:4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile 'com.android.support:appcompat-v7:25.0.1'
+    testCompile 'junit:junit:4.+'
+    compile project(':mylibrary')
 }
 repositories {
     mavenCentral()

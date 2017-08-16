@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:gravity="center"
     android:layout_height="match_parent"
-    tools:context="com.hcy.tomeetu.MainActivity">
+    tools:context="com.hcy.tomeetu.activity.MainActivity">
 
     <Button
         android:id="@+id/bt_main_totest"

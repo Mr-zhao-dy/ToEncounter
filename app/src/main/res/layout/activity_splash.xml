@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hcy.tomeetu.activity.TestActivity">
+    tools:context="com.hcy.tomeetu.activity.SplashActivity">
 
+    <ImageView
+        android:src="@drawable/timg"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>
